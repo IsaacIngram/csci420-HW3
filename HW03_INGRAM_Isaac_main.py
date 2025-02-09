@@ -1,3 +1,14 @@
+###############################################################################
+#
+# File: HW03_INGRAM_Isaac_main.py
+#
+# Author: Isaac Ingram
+#
+# Purpose: Read traffic station data and plot a ROC curve for the possible
+# threshold speeds.
+#
+###############################################################################
+
 import math
 
 import pandas
@@ -22,7 +33,6 @@ def read_traffic_data():
 
 
 
-
 def main():
 
     # Read in traffic data
@@ -44,7 +54,7 @@ def main():
     # Initialize tracker for the first zero points for both false alarm rate and true positive rate
     first_zero_far_point_speed = None
     last_tpr_one_point_speed = None
-
+    # Initialize tracker for point with the least total erro
     least_total_error_point = (1, 0, 1, 0)
 
     # Iterate through all possible threshold speeds
@@ -80,6 +90,7 @@ def main():
         # Calculate total rate of mistakes for this threshold
         percent_mistakes = (num_false_negatives + num_false_positives) / final_df.size
 
+        # Store this point as the point with the least error if it has less error than the previous best candidate
         if percent_mistakes < least_total_error_point[2]:
             least_total_error_point = (fnr, tpr, percent_mistakes, threshold_speed)
 
@@ -116,8 +127,10 @@ def main():
     # Add label and surrounding box for point with the least number of mistakes
     plt.text(least_total_error_point[0] + 0.01, least_total_error_point[1] - 0.57, f'Best threshold with lowest number\nof mistakes ({least_total_error_point[3]} mph)', rotation = -45, color='red')
     plt.plot(least_total_error_point[0], least_total_error_point[1], marker='s', mfc='none', mec='red', markersize=10)
-
+    # Add grid lines and display the graph
     plt.grid()
     plt.show()
+
+
 if __name__ == '__main__':
     main()
